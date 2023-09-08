@@ -1,2 +1,2 @@
 #No need to install torch and torchvision, they are already installed in the docker image
-SimpleITK=2.2.1w
+SimpleITK=2.2.1
