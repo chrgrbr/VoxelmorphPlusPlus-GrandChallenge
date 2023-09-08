@@ -23,12 +23,6 @@ docker run --rm \
         -v voxelmorphplusplus-output-$VOLUME_SUFFIX:/output/ \
         voxelmorphplusplus
 
-
-
-docker run --rm \
-        -v voxelmorphplusplus-output-$VOLUME_SUFFIX:/output/ \
-        python:3.9-slim cat /output/results.json | python -m json.tool
-
 docker run --rm \
         -v voxelmorphplusplus-output-$VOLUME_SUFFIX:/output/ \
         -v $SCRIPTPATH/test/:/input/ \

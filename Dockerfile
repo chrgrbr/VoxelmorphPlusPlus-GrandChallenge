@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
 
 RUN groupadd -r user && useradd -m --no-log-init -r -g user user
 
@@ -18,7 +18,7 @@ COPY --chown=user:user requirements.txt /opt/app/
 RUN python -m piptools sync requirements.txt
 
 
-
-COPY --chown=user:user process.py /opt/app/
+COPY --chown=user:user model_weights /opt/algorithm/
+COPY --chown=user:user process.py filters.py foerstner.py thin_splate_spline.py vxmplusplus_utils.py /opt/app/
 
 ENTRYPOINT [ "python", "-m", "process" ]

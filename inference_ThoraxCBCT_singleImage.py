@@ -3,8 +3,11 @@ import torch
 import torch.nn.functional as F
 import os
 import nibabel as nib
-from thin_plate_spline import thin_plate_dense
+import SimpleITK as sitk
 from scipy.ndimage import map_coordinates
+
+#imports
+from thin_plate_spline import thin_plate_dense
 from foerstner import foerstner_kpts 
 from vxmplusplus_utils import get_vxmpp_models,return_crops
 from vxmplusplus_utils import adam_mind
@@ -54,11 +57,11 @@ def get_warped_pair(_cf,_img_moving):
 
 def main():
     
-    img_fixed,masked_fixed,img_mov,masked_mov,kpts_fix,mind_fixed,mind_mov,filename_fix = read_input('Learn2Reg23/vxmpp_algorithms/input/img_fixed','Learn2Reg23/vxmpp_algorithms/input/img_moving','Learn2Reg23/vxmpp_algorithms/input/mask_fixed','Learn2Reg23/vxmpp_algorithms/input/mask_moving',do_MIND=True) #hardcoded image and mask paths
+    img_fixed,masked_fixed,img_mov,masked_mov,kpts_fix,mind_fixed,mind_mov,filename_fix = read_input('/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/input/img_fixed','/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/input/img_moving','/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/input/mask_fixed','/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/input/mask_moving',do_MIND=True) #hardcoded image and mask paths
     
     unet_model,heatmap,mesh = get_vxmpp_models()
 
-    state_dicts = torch.load('Learn2Reg23/vxmpp_algorithms/voxelmorphplusplus.pth')  #model path 
+    state_dicts = torch.load('/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/voxelmorphplusplus.pth')  #model path 
     unet_model.load_state_dict(state_dicts[1])
     heatmap.load_state_dict(state_dicts[0])
 
@@ -108,7 +111,7 @@ def main():
     disp_tmp = disp_lr[0].permute(3,0,1,2).numpy()
     disp_lr = disp_lr[0].numpy()
     displacement_field = nib.Nifti1Image(disp_lr, None)
-    nib.save(displacement_field, 'Learn2Reg23/vxmpp_algorithms/output/disp_field.nii.gz')
+    #nib.save(displacement_field, 'Learn2Reg23/vxmpp_algorithms/output/disp_field.nii.gz')
     #case_number = filename_fix.split('CT')[1][0:5]
     #acq_time = filename_fix.split('.nii.gz')[0][-5:]
     #nib.save(displacement_field, 'Learn2Reg23/vxmpp_algorithms/output/disp'+case_number+acq_time+case_number+'_0000.nii.gz')

@@ -10,9 +10,17 @@ from vxmplusplus_utils import get_vxmpp_models,return_crops, adam_mind, MINDSSC
 
 class VoxelMorphPlusPlus():  
     def __init__(self):
-        self.in_path = Path('/input/images')
-        self.out_path = Path('/output/images/displacement-field')
-        self.model_path = Path('/opt/algorithm/voxelmorphplusplus.pth')
+
+
+
+        #self.in_path = Path('/input/images')
+        #self.out_path = Path('/output/images/displacement-field')
+        #self.model_path = Path('/opt/algorithm/voxelmorphplusplus.pth')
+
+
+        self.in_path = Path('/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/test/images')
+        self.out_path = Path('/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/output/qq')
+        self.model_path = Path('/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/model_weights/voxelmorphplusplus.pth')
 
         self.grid_sp = 1
         self.do_MIND = True
@@ -48,14 +56,18 @@ class VoxelMorphPlusPlus():
         ##if no masks provided, use the whole image
         if fpath_fixed_mask is not None:
             mask_fixed = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_fixed_mask)))
-            masked_fixed = F.interpolate(((img_fixed+1024)*mask_fixed).unsqueeze(0).unsqueeze(0),scale_factor=.5,mode='trilinear').squeeze()
         else:
-            mask_fixed = img_fixed.clone()
+            mask_fixed = torch.ones_like(img_fixed)
         if fpath_moving_mask is not None:
             mask_mov = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_moving_mask)))
-            masked_mov = F.interpolate(((img_mov+1024)*mask_mov).unsqueeze(0).unsqueeze(0),scale_factor=.5,mode='trilinear').squeeze()
         else:
-            mask_mov = img_mov.clone()
+            mask_mov = torch.ones_like(img_mov)
+
+
+        masked_fixed = F.interpolate(((img_fixed+1024)*mask_fixed).unsqueeze(0).unsqueeze(0),scale_factor=.5,mode='trilinear').squeeze()
+        masked_mov = F.interpolate(((img_mov+1024)*mask_mov).unsqueeze(0).unsqueeze(0),scale_factor=.5,mode='trilinear').squeeze()
+
+        
 
 
         kpts_fix = foerstner_kpts(img_fixed.unsqueeze(0).unsqueeze(0).to(self.device), mask_fixed.unsqueeze(0).unsqueeze(0).to(self.device), 1.4, 3).cpu()
