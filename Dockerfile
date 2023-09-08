@@ -19,6 +19,6 @@ RUN python -m piptools sync requirements.txt
 
 
 COPY --chown=user:user model_weights /opt/algorithm/
-COPY --chown=user:user process.py filters.py foerstner.py thin_splate_spline.py vxmplusplus_utils.py /opt/app/
+COPY --chown=user:user process.py filters.py foerstner.py thin_plate_spline.py vxmplusplus_utils.py /opt/app/
 
 ENTRYPOINT [ "python", "-m", "process" ]
