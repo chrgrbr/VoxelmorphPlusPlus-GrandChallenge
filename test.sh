@@ -26,8 +26,7 @@ docker run --rm \
 docker run --rm \
         -v voxelmorphplusplus-output-$VOLUME_SUFFIX:/output/ \
         -v $SCRIPTPATH/test/:/input/ \
-        python:3.9-slim python -c "import json, sys; f1 = json.load(open('/output/results.json')); f2 = json.load(open('/input/expected_output.json')); sys.exit(f1 != f2);"
-
+        insighttoolkit/simpleitk-notebooks:latest python -c "import SimpleITK, numpy; pred = SimpleITK.GetArrayFromImage(SimpleITK.ReadImage('/output/images/displacement-field/thisIsAnArbitraryFilename.mha')); ref = SimpleITK.GetArrayFromImage(SimpleITK.ReadImage('/input/reference.mha')); assert numpy.allclose(pred, ref, atol=1e-2)"
 if [ $? -eq 0 ]; then
     echo "Tests successfully passed..."
 else
