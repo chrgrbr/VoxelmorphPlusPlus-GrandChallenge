@@ -18,9 +18,9 @@ class VoxelMorphPlusPlus():
         #self.model_path = Path('/opt/algorithm/voxelmorphplusplus.pth')
 
 
-        self.in_path = Path('/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/test/images')
-        self.out_path = Path('/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/output/qq')
-        self.model_path = Path('/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/model_weights/voxelmorphplusplus.pth')
+        self.in_path = Path('/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/test/images')
+        self.out_path = Path('/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/output')
+        self.model_path = Path('/share/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/model_weights/voxelmorphplusplus.pth')
 
         self.grid_sp = 1
         self.do_MIND = True
@@ -50,16 +50,16 @@ class VoxelMorphPlusPlus():
             fpath_moving_mask = list((self.in_path / 'moving-mask').glob('*.mha'))[0]
 
 
-        img_fixed = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_fixed_image)))
-        img_mov = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_moving_image)))
+        img_fixed = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_fixed_image))).permute(2,1,0)
+        img_mov = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_moving_image))).permute(2,1,0)
         
         ##if no masks provided, use the whole image
         if fpath_fixed_mask is not None:
-            mask_fixed = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_fixed_mask)))
+            mask_fixed = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_fixed_mask))).permute(2,1,0)
         else:
             mask_fixed = torch.ones_like(img_fixed)
         if fpath_moving_mask is not None:
-            mask_mov = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_moving_mask)))
+            mask_mov = torch.from_numpy(SimpleITK.GetArrayFromImage(SimpleITK.ReadImage(fpath_moving_mask))).permute(2,1,0)
         else:
             mask_mov = torch.ones_like(img_mov)
 
@@ -139,7 +139,6 @@ class VoxelMorphPlusPlus():
 
 
     def write_outputs(self, displacement_field):
-        displacement_field = displacement_field.squeeze(0).permute(1, 2, 3, 0).cpu().numpy()
         out = SimpleITK.GetImageFromArray(displacement_field)
         ##You can give the output-mha file any name you want, but it must be saved to  "/output/displacement-field" 
         SimpleITK.WriteImage(out, str(self.out_path / 'thisIsAnArbitraryFilename.mha'))
