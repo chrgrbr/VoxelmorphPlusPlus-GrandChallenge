@@ -15,7 +15,7 @@ RUN python -m pip install --user -U pip && python -m pip install --user pip-tool
 
 
 COPY --chown=user:user requirements.txt /opt/app/
-RUN python -m piptools sync requirements.txt
+RUN python -m pip install -r requirements.txt
 
 
 COPY --chown=user:user model_weights /opt/algorithm/
