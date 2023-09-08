@@ -13,14 +13,14 @@ class VoxelMorphPlusPlus():
 
 
 
-        #self.in_path = Path('/input/images')
-        #self.out_path = Path('/output/images/displacement-field')
-        #self.model_path = Path('/opt/algorithm/voxelmorphplusplus.pth')
+        self.in_path = Path('/input/images')
+        self.out_path = Path('/output/images/displacement-field')
+        self.model_path = Path('/opt/algorithm/voxelmorphplusplus.pth')
 
 
-        self.in_path = Path('/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/test/images')
-        self.out_path = Path('/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/output')
-        self.model_path = Path('/share/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/model_weights/voxelmorphplusplus.pth')
+        #self.in_path = Path('/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/test/images')
+        #self.out_path = Path('/share/data_supergrover3/heyer/Learn2Reg23/vxmpp_algorithms/output')
+        #self.model_path = Path('/share/data_abby1/grossbroehmer/L2R23_Algortihm_Submission/Algos/VoxelMorphPlusPlus/model_weights/voxelmorphplusplus.pth')
 
         self.grid_sp = 1
         self.do_MIND = True
