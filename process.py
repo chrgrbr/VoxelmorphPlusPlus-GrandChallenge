@@ -67,7 +67,6 @@ class VoxelMorphPlusPlus():
 
 
         kpts_fix = foerstner_kpts(img_fixed.unsqueeze(0).unsqueeze(0).to(self.device), mask_fixed.unsqueeze(0).unsqueeze(0).to(self.device), 1.4, 3).cpu()
-    
         if(do_MIND):
             with torch.no_grad():
                 with torch.cuda.amp.autocast():
@@ -84,8 +83,7 @@ class VoxelMorphPlusPlus():
         kpts_moving = torch.flip((_cf[:,3:]-torch.tensor([H/2,W/2,D/2]).view(1,-1)).div(torch.tensor([H/2,W/2,D/2]).view(1,-1)),(-1,))
         with torch.no_grad():
             dense_flow = thin_plate_dense(kpts_fixed.unsqueeze(0).to(self.device), (kpts_moving-kpts_fixed).unsqueeze(0).to(self.device), (H, W, D), 4, 0.01).cpu()
-        warped_img = F.grid_sample(_img_moving.view(1,1,H,W,D).cpu(),dense_flow+F.affine_grid(torch.eye(3,4).unsqueeze(0),(1,1,H,W,D))).squeeze()
-        return warped_img,dense_flow
+        return dense_flow
     
     def predict(self, inputs):
         img_fixed,masked_fixed,img_mov,masked_mov,kpts_fix,mind_fixed,mind_mov = inputs
@@ -125,7 +123,7 @@ class VoxelMorphPlusPlus():
                 
 
         cf = torch.cat([keypts_fix, keypts_moved], dim=1)
-        _,dense_flow = self.get_warped_pair(cf,img_mov)
+        dense_flow = self.get_warped_pair(cf,img_mov)
         H,W,D = img_mov.shape
         dense_flow = dense_flow.flip(4).permute(0, 4, 1, 2, 3) * torch.tensor( [H - 1, W - 1, D - 1]).view(1, 3, 1, 1, 1) / 2
         disp_lr = F.interpolate(dense_flow, size=(H // self.grid_sp, W // self.grid_sp, D // self.grid_sp), mode='trilinear',

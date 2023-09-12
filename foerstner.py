@@ -35,7 +35,7 @@ def invert_structure_tensor(struct):
 
     return struct_inv
 
-def foerstner_kpts(img, mask, sigma=1.4, d=9, thresh=1e-8):
+def foerstner_kpts(img, mask, sigma=1.4, d=9, thresh=1e-5):
     _, _, D, H, W = img.shape
     device = img.device
     
@@ -68,4 +68,17 @@ def foerstner_kpts(img, mask, sigma=1.4, d=9, thresh=1e-8):
     
     kpts = torch.nonzero(mask_eroded & (maxfeat == distinctiveness) & (distinctiveness >= thresh)).unsqueeze(0)[:, :, 2:]
     
-    return kpts_pt(kpts, (D, H, W), align_corners=True)
+
+    num_keypoints = kpts.size(1)   
+    num_samples = 10000  # Specify the number of keypoints to sample
+    if num_samples >= num_keypoints:
+        return kpts_pt(kpts, (D, H, W), align_corners=True)  
+   
+    shuffled_indices = torch.randperm(num_keypoints)
+    sampled_keypoints = kpts[:, shuffled_indices[:num_samples], :]
+
+    return kpts_pt(sampled_keypoints, (D, H, W), align_corners=True)
+
+
+    
+    
