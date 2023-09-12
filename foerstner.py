@@ -35,7 +35,7 @@ def invert_structure_tensor(struct):
 
     return struct_inv
 
-def foerstner_kpts(img, mask, sigma=1.4, d=9, thresh=1e-5):
+def foerstner_kpts(img, mask, sigma=1.4, d=9, thresh=1e-8):
     _, _, D, H, W = img.shape
     device = img.device
     
